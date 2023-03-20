@@ -14,6 +14,7 @@ NAME = pipex
 
 CFLAGS = -Wall -Wextra -Werror -g3
 
+FSAN = -fsanitize=address -static-libsan -g
 
 SRC = pipex.c \
 	pipex_utils.c \

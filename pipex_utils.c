@@ -25,13 +25,26 @@ void	free_arr(char **arr)
 	free(arr);
 }
 
+void	print_arr(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		ft_printf("%s\n", arr[i]);
+		i++;
+	}
+}
+
 void	err_exit(char **mem1, char **mem2, char *message)
 {
+	ft_putstr_fd(message, 2);
+	ft_putchar_fd('\n', 2);
 	if (mem1)
 		free_arr(mem1);
 	if (mem2)
 		free_arr(mem2);
-	perror(message);
 	exit(EXIT_FAILURE);
 }
 
@@ -55,9 +68,11 @@ char	*valid_path(char **cmd_arr, char **paths_arr)
 		}
 		if (access(path, X_OK) == 0)
 			return (path);
+		free(path);
 		i++;
 	}
 	free(path_end);
-	err_exit(cmd_arr, paths_arr, "Command not found");
+	ft_putstr_fd("zsh: command not found: ", 2);
+	err_exit(cmd_arr, paths_arr, cmd_arr[0]);
 	return (NULL);
 }
