@@ -25,15 +25,20 @@ void	free_arr(char **arr)
 	free(arr);
 }
 
-void	print_arr(char **arr)
+void	open_files(int *f1, int *f2, int arc, char **arv)
 {
-	int	i;
-
-	i = 0;
-	while (arr[i] != NULL)
+	*f1 = open(arv[1], O_RDONLY);
+	if (*f1 < 0)
 	{
-		ft_printf("%s\n", arr[i]);
-		i++;
+		ft_putstr_fd("zsh: no such file or directory: ", 2);
+		err_exit(NULL, NULL, arv[1]);
+	}
+	*f2 = open(arv[arc - 1], O_CREAT | O_RDWR | O_TRUNC, 0777);
+	if (*f2 < 0)
+	{
+		if (*f1 != -1)
+			close(*f1);
+		return (perror("Open f2 error: "));
 	}
 }
 

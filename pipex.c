@@ -23,7 +23,7 @@ char	*get_exec_path(char **cmd_arr, char **envp)
 		return (cmd_arr[0]);
 	while (envp[i++])
 	{
-		if (!ft_strncmp(envp[i], "PATH", 4))
+		if (!ft_strncmp(envp[i], "PATH=", 5))
 			break ;
 	}
 	env_paths_str = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
@@ -41,10 +41,11 @@ void	child1_process(int f1, int *end, char **arv, char **envp)
 	char	*path;
 	char	**cmd_arr;
 
-	dup2(f1, STDIN_FILENO);
-	dup2(end[1], STDOUT_FILENO);
 	close(end[0]);
+	dup2(f1, STDIN_FILENO);
 	close(f1);
+	dup2(end[1], STDOUT_FILENO);
+	close(end[1]);
 	cmd_arr = ft_split(arv[2], ' ');
 	if (!cmd_arr)
 		err_exit(NULL, NULL, "Malloc Error");
@@ -60,10 +61,11 @@ void	child2_process(int f2, int *end, char **arv, char **envp)
 	char	*path;
 	char	**cmd_arr;
 
-	dup2(f2, STDOUT_FILENO);
-	dup2(end[0], STDIN_FILENO);
 	close(end[1]);
+	dup2(f2, STDOUT_FILENO);
 	close(f2);
+	dup2(end[0], STDIN_FILENO);
+	close(end[0]);
 	cmd_arr = ft_split(arv[3], ' ');
 	if (!cmd_arr)
 		err_exit(NULL, NULL, "Malloc Error");
@@ -81,7 +83,8 @@ void	pipex(int f1, int f2, char **arv, char **envp)
 	pid_t	child1;
 	pid_t	child2;
 
-	pipe(end);
+	if (pipe(end) < 0)
+		return (perror("Pipe: "));
 	child1 = fork();
 	if (child1 < 0)
 		return (perror("Fork: "));
@@ -105,14 +108,7 @@ int	main(int arc, char **arv, char **envp)
 
 	if (arc == 5)
 	{
-		f1 = open(arv[1], O_RDONLY);
-		f2 = open(arv[4], O_CREAT | O_RDWR | O_TRUNC, 0777);
-		if (f1 < 0 || f2 < 0)
-		{
-			ft_putstr_fd("zsh: no such file or directory: ", 2);
-			err_exit(NULL, NULL, arv[1]);
-			return (EXIT_FAILURE);
-		}
+		open_files(&f1, &f2, arc, arv);
 		pipex(f1, f2, arv, envp);
 	}
 	else
