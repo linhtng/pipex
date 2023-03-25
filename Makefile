@@ -18,16 +18,16 @@ FSAN = -fsanitize=address -static-libsan -g
 
 SRC = pipex.c \
 	pipex_utils.c \
+	pipex_exit.c \
 
 SRC_B = pipex_bonus.c \
 	pipex_utils.c \
+	pipex_exit.c \
 	pipex_bonus_utils.c \
 
 OBJSFD 	= objs
 
 OBJSFD_B 	= objs_b
-
-BONUSFD = bonus
 
 OBJS 	= $(addprefix $(OBJSFD)/,$(SRC:.c=.o))
 
@@ -41,6 +41,8 @@ FT_PRINTF_BINARY	= -L./includes/ft_printf -lftprintf
 
 FT_PRINTF		= ./includes/ft_printf/libftprintf.a
 
+BONUS_DONE_FILE = $(OBJSFD_B)/.done
+
 all: $(FT_PRINTF) $(NAME)
 
 $(FT_PRINTF):
@@ -53,9 +55,13 @@ $(OBJSFD)/%.o: %.c | $(OBJSFD)
 	gcc -g $(CFLAGS) $(HDR) $(FT_PRINTF_HDR) -c $< -o $@
 
 $(NAME): $(OBJS) $(FT_PRINTF) ./includes/pipex.h
-	gcc -g $(OBJS) $(FT_PRINTF_BINARY) -o $@
+	gcc -g $(CFLAGS) $(OBJS) $(FT_PRINTF_BINARY) -o $@
 
-bonus: $(FT_PRINTF) $(NAME)
+bonus: $(BONUS_DONE_FILE)
+
+$(BONUS_DONE_FILE): $(FT_PRINTF) $(OBJS_B)
+	gcc -g $(OBJS_B) $(FT_PRINTF_BINARY) -o $(NAME)
+	touch $(BONUS_DONE_FILE)
 
 $(OBJSFD_B):
 	mkdir $@
@@ -63,11 +69,8 @@ $(OBJSFD_B):
 $(OBJSFD_B)/%.o: %.c | $(OBJSFD_B)
 	gcc -g $(CFLAGS) $(HDR) $(FT_PRINTF_HDR) -c $< -o $@
 
-$(NAME): $(OBJS_B) $(FT_PRINTF) ./includes/pipex_bonus.h
-	gcc -g $(OBJS_B) $(FT_PRINTF_BINARY) -o $@
-
 clean:
-	rm -f $(OBJS) $(OBJS_B)
+	rm -f $(OBJS) $(OBJS_B) $(BONUS_DONE_FILE)
 	rm -rf $(OBJSFD) $(OBJSFD_B)
 	make -C ./includes/ft_printf clean
 
@@ -77,6 +80,4 @@ fclean: clean
 
 re: fclean all
 
-re_bonus: fclean bonus
-
-.PHONY: all clean fclean re re_bonus bonus
+.PHONY: all clean fclean re bonus
