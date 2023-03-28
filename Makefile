@@ -17,13 +17,13 @@ CFLAGS = -Wall -Wextra -Werror -g3
 FSAN = -fsanitize=address -static-libsan -g
 
 SRC = pipex.c \
-	pipex_utils.c \
 	pipex_exit.c \
+	pipex_utils.c 
 
 SRC_B = pipex_bonus.c \
-	pipex_utils.c \
-	pipex_exit.c \
-	pipex_bonus_utils.c \
+	pipex_bonus_exit.c \
+	pipex_bonus_heredoc.c \
+	pipex_bonus_utils.c 
 
 OBJSFD 	= objs
 
@@ -59,7 +59,7 @@ $(NAME): $(OBJS) $(FT_PRINTF) ./includes/pipex.h
 
 bonus: $(BONUS_DONE_FILE)
 
-$(BONUS_DONE_FILE): $(FT_PRINTF) $(OBJS_B)
+$(BONUS_DONE_FILE): $(FT_PRINTF) $(OBJS_B) ./includes/pipex_bonus.h
 	gcc -g $(OBJS_B) $(FT_PRINTF_BINARY) -o $(NAME)
 	touch $(BONUS_DONE_FILE)
 

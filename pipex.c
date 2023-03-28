@@ -12,40 +12,18 @@
 
 #include "pipex.h"
 
-char	*get_exec_path(char **cmd_arr, t_fds fds, char **envp)
-{
-	int		i;
-	char	*env_paths_str;
-	char	**env_paths_arr;
-
-	i = 0;
-	if (access(cmd_arr[0], X_OK) == 0)
-		return (cmd_arr[0]);
-	while (envp[i++])
-	{
-		if (!ft_strncmp(envp[i], "PATH=", 5))
-			break ;
-	}
-	env_paths_str = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
-	if (!env_paths_str)
-		err_exit(cmd_arr, NULL, fds, "Malloc Error");
-	env_paths_arr = ft_split(env_paths_str, ':');
-	free (env_paths_str);
-	if (!env_paths_arr)
-		err_exit(cmd_arr, NULL, fds, "Malloc Error");
-	return (valid_path(cmd_arr, fds, env_paths_arr));
-}
-
 void	child1_process(t_fds fds, int *end, char **arv, char **envp)
 {
 	char	*path;
 	char	**cmd_arr;
 
+	close(end[0]);
 	if (dup2(fds.f1, STDIN_FILENO) < 0)
 		close_fds_exit(fds, end, "Dup error: ");
+	close(fds.f1);
 	if (dup2(end[1], STDOUT_FILENO) < 0)
 		close_fds_exit(fds, end, "Dup error: ");
-	close_fds(fds, end);
+	close(end[1]);
 	cmd_arr = ft_split(arv[2], ' ');
 	if (!cmd_arr)
 		err_exit(NULL, NULL, fds, "Malloc Error");
@@ -62,11 +40,13 @@ void	child2_process(t_fds fds, int *end, char **arv, char **envp)
 	char	*path;
 	char	**cmd_arr;
 
+	close(end[1]);
 	if (dup2(fds.f2, STDOUT_FILENO) < 0)
 		close_fds_exit(fds, end, "Dup error: ");
+	close(fds.f2);
 	if (dup2(end[0], STDIN_FILENO) < 0)
 		close_fds_exit(fds, end, "Dup error: ");
-	close_fds(fds, end);
+	close(end[0]);
 	cmd_arr = ft_split(arv[3], ' ');
 	if (!cmd_arr)
 		err_exit(NULL, NULL, fds, "Malloc Error");
