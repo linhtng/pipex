@@ -18,12 +18,18 @@ FSAN = -fsanitize=address -static-libsan -g
 
 SRC = pipex.c \
 	pipex_exit.c \
-	pipex_utils.c 
+	pipex_utils.c \
+	pipex_split.c \
+	pipex_split_utils.c \
+	pipex_split_quote.c
 
 SRC_B = pipex_bonus.c \
 	pipex_bonus_exit.c \
 	pipex_bonus_heredoc.c \
-	pipex_bonus_utils.c 
+	pipex_bonus_utils.c \
+	pipex_split_bonus.c \
+	pipex_split_utils_bonus.c \
+	pipex_split_quote_bonus.c
 
 OBJSFD 	= objs
 

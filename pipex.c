@@ -24,7 +24,7 @@ void	child1_process(t_fds fds, int *end, char **arv, char **envp)
 	if (dup2(end[1], STDOUT_FILENO) < 0)
 		close_fds_exit(fds, end, "Dup error: ");
 	close(end[1]);
-	cmd_arr = ft_split(arv[2], ' ');
+	cmd_arr = pipex_split(arv[2], ' ');
 	if (!cmd_arr)
 		err_exit(NULL, NULL, fds, "Malloc Error");
 	path = get_exec_path(cmd_arr, fds, envp);
@@ -47,7 +47,7 @@ void	child2_process(t_fds fds, int *end, char **arv, char **envp)
 	if (dup2(end[0], STDIN_FILENO) < 0)
 		close_fds_exit(fds, end, "Dup error: ");
 	close(end[0]);
-	cmd_arr = ft_split(arv[3], ' ');
+	cmd_arr = pipex_split(arv[3], ' ');
 	if (!cmd_arr)
 		err_exit(NULL, NULL, fds, "Malloc Error");
 	path = get_exec_path(cmd_arr, fds, envp);

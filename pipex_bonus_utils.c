@@ -90,7 +90,7 @@ void	child_process(t_fds fds, int *pipe_end, char *cmd, char **envp)
 	if (dup2(fds.prevpipe, STDIN_FILENO) < 0)
 		close_fds_exit(fds, pipe_end, "Dup error: ");
 	close(fds.prevpipe);
-	cmd_arr = ft_split(cmd, ' ');
+	cmd_arr = pipex_split(cmd, ' ');
 	if (!cmd_arr)
 		err_exit(NULL, NULL, fds.f2, "Malloc Error");
 	path = get_exec_path(cmd_arr, fds.f2, envp);
@@ -115,7 +115,7 @@ void	last_child_process(int prevpipe, int f2, char *cmd, char **envp)
 	if (dup2(f2, STDOUT_FILENO) < 0)
 		err_exit(NULL, NULL, f2, "Pipe error");
 	close(f2);
-	cmd_arr = ft_split(cmd, ' ');
+	cmd_arr = pipex_split(cmd, ' ');
 	if (!cmd_arr)
 		err_exit(NULL, NULL, -1, "Malloc Error");
 	path = get_exec_path(cmd_arr, -1, envp);
