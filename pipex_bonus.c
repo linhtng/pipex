@@ -111,7 +111,7 @@ int	main(int arc, char **arv, char **envp)
 
 	if (arc >= 5)
 	{
-		if (ft_strncmp(arv[1], "here_doc", ft_strlen(arv[1])))
+		if (ft_strncmp(arv[1], "here_doc", ft_strlen("here_doc") + 1))
 		{
 			pipe_num = arc - 4;
 			pipex_b(pipe_num, arc, arv, envp);

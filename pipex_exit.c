@@ -33,8 +33,10 @@ void	close_fds(t_fds fds, int *pipe_end)
 		close(fds.f1);
 	if (fds.f2 != -1)
 		close(fds.f2);
-	close(pipe_end[0]);
-	close(pipe_end[1]);
+	if (pipe_end[0] != -1)
+		close(pipe_end[0]);
+	if (pipe_end[1] != -1)
+		close(pipe_end[1]);
 }
 
 void	close_fds_exit(t_fds fds, int *pipe_end, char *message)
@@ -42,16 +44,4 @@ void	close_fds_exit(t_fds fds, int *pipe_end, char *message)
 	close_fds(fds, pipe_end);
 	perror(message);
 	exit(EXIT_FAILURE);
-}
-
-void	print_arr(char **arr)
-{
-	int	i;
-
-	i = 0;
-	while (arr[i] != NULL)
-	{
-		ft_printf("%s\n", arr[i]);
-		i++;
-	}
 }

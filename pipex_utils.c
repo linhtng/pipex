@@ -28,12 +28,12 @@ void	free_arr(char **arr)
 void	open_files(t_fds *fds, int arc, char **arv)
 {
 	fds->f1 = open(arv[1], O_RDONLY);
+	fds->f2 = open(arv[arc - 1], O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fds->f1 < 0)
 	{
 		ft_putstr_fd("zsh: no such file or directory: ", 2);
 		err_exit(NULL, NULL, *fds, arv[1]);
 	}
-	fds->f2 = open(arv[arc - 1], O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fds->f2 < 0)
 		err_exit(NULL, NULL, *fds, "Open f2 error.");
 }
