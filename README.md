@@ -27,16 +27,83 @@
 
 > _Pipex is a project that re-creates in C the way two commands are piped together via `|` in the shell
 
-For more detailed information, look at the [pipex.subject.pdf]
+For more detailed information, look at the 
+[pipex_subject.pdf](https://github.com/linhtng/pipex/files/11137478/pipex_subject.pdf)
 
 
 ## 🛠️ Usage
 ### Mandatory
-make
+```shell
+./pipex file1 cmd1 cmd2 file2
+```
+* Execution of ``pipex`` should be similar to the next shell command:
 
-./pipex infile cmd1 cmd2 outfile
+```shell
+< file1 cmd1 | cmd2 > file2
+```
 
-### Bonus
-make bonus
+``file1``, ``file2`` - filenames
 
+``cmd1``, ``cmd2`` - shell commands with their parameters
+
+<br>
+
+* Handling errors must be like in shell
+
+### Bonus part
+
+* ``pipex`` should handle multiple pipes:
+
+```shell
 ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2
+```
+
+is equivalent to the shell command:
+
+```shell
+< file1 cmd1 | cmd2 | cmd3 ... | cmdn > file2
+```
+
+<br>
+
+* ``pipex`` should support `«` and `»` when the first parameter is `here_doc`:
+
+```shell
+./pipex here_doc LIMITER cmd1 cmd2 file
+```
+is equivalent to the shell command:
+
+```shell
+cmd1 << LIMITER | cmd2 >> file
+```
+
+---
+
+<a name="installation"></a>
+## Installation
+
+* Clone this repository:
+
+```shell
+https://github.com/linhtng/pipex.git
+```
+
+* Go to the project folder:
+
+```shell
+cd pipex
+```
+
+* To compile mandatory part:
+
+```shell
+make
+```
+
+* To compile bonus part:
+
+```shell
+make bonus
+```
+
+* After compilation just run ``pipex`` with your parameters.
